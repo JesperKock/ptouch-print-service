@@ -9,6 +9,8 @@ import (
 )
 
 type requestPayload struct {
+	Cmd  string `json:"cmd"`
+	Font string `json:"font"`
 	Text string `json:"text"`
 }
 
@@ -17,7 +19,10 @@ type responsePayload struct {
 	Error   string `json:"error,omitempty"`
 }
 
-var validInputRegex = regexp.MustCompile(`^[a-zA-Z0-9-]+$`)
+var (
+	validInputRegex    = regexp.MustCompile(`^[a-zA-Z0-9-]+$`)
+	validInputCommands = []string{"--font", "--fontsize", "--writepng", "--image", "--text", "--cutmark", "--pad"}
+)
 
 func main() {
 	http.HandleFunc("/print", printHandler)
@@ -25,6 +30,24 @@ func main() {
 	fmt.Println("Starting server on :8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		fmt.Printf("Server error: %s\n", err)
+	}
+}
+
+func infoHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
+	cmd := exec.Command("ptouch-print", "--info")
+	if err := cmd.Run(); err != nil {
+		response := responsePayload{
+			Message: "Command execution failed",
+			Error:   err.Error(),
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(response)
+		return
 	}
 }
 
@@ -50,7 +73,25 @@ func printHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cmd := exec.Command("ptouch-print", "--text", payload.Text)
+	if validCommands(payload.Cmd, validInputCommands) {
+		response := responsePayload{
+			Message: "Validation failed",
+			Error: `Valid commands:
+						--font <file>		use font <file> or <name>
+						--fontsize <size>	Manually set fontsize
+						--writepng <file>	instead of printing, write output to png file
+						--image <file>		print the given image
+						--text <text>		Print 1-4 lines of text.
+						--cutmark			Print a mark where the tape should be cut
+						--pad <n>			Add n pixels padding (blank tape)
+						--info				show info about detected tape`,
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	cmd := exec.Command("ptouch-print", payload.Cmd, payload.Text)
 	if err := cmd.Run(); err != nil {
 		response := responsePayload{
 			Message: "Command execution failed",
