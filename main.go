@@ -60,17 +60,10 @@ func printHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if validCommands(payload.Cmd, validInputCommands) {
+	if !validCommands(payload.Cmd, validInputCommands) {
 		response := responsePayload{
 			Message: "Validation failed",
-			Error: `Valid commands:
-						--font <file>		use font <file> or <name>
-						--fontsize <size>	Manually set fontsize
-						--writepng <file>	instead of printing, write output to png file
-						--image <file>		print the given image
-						--text <text>		Print 1-4 lines of text.
-						--cutmark			Print a mark where the tape should be cut
-						--pad <n>			Add n pixels padding (blank tape)`,
+			Error:   "Valid commands is --font, --fontsize, --writepng, --image, --text, --cutmark, --pad",
 		}
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(response)
