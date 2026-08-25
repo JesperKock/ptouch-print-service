@@ -84,11 +84,11 @@ func templateHandler(w http.ResponseWriter, r *http.Request) {
 	}{
 		{
 			"ptouch-print",
-			[]string{"--font=IntoneMono Nerd Font", "--fontsize=26", "--text=" + payload.TextDa, "--writepng", "/images/text_da.png"},
+			[]string{"--font=IntoneMono", "--fontsize=26", "--text=" + payload.TextDa, "--writepng", "/images/text_da.png"},
 		},
 		{
 			"ptouch-print",
-			[]string{"--font=IntoneMono Nerd Font", "--fontsize=26", "--text=" + payload.TextEn, "--writepng", "/images/text_en.png"},
+			[]string{"--font=IntoneMono", "--fontsize=26", "--text=" + payload.TextEn, "--writepng", "/images/text_en.png"},
 		},
 		{
 			"magick",

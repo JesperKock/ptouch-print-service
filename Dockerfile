@@ -6,6 +6,11 @@ RUN git clone https://git.familie-radermacher.ch/linux/ptouch-print.git
 WORKDIR /src/ptouch-print
 RUN ./build.sh
 
+# Install IntoneMono Font
+RUN mkdir -p /usr/local/share/fonts
+COPY IntelOneMono-Regular.ttf /usr/local/share/fonts
+RUN fc-cache -fv /usr/local/share/fonts
+
 # Build ptouch-print-service
 FROM golang:1.23-alpine AS builder
 WORKDIR /app
