@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os/exec"
 	"regexp"
-	"strings"
+	"slices"
 )
 
 type requestPayload struct {
@@ -35,12 +35,7 @@ func main() {
 }
 
 func validCommands(inputCommand string, validCommands []string) bool {
-	for _, element := range validCommands {
-		if strings.Contains(inputCommand, element) {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(validCommands, inputCommand)
 }
 
 func printHandler(w http.ResponseWriter, r *http.Request) {
