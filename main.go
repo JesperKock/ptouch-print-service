@@ -67,6 +67,16 @@ func templateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !validInputRegex.MatchString(payload.TextDa) && !validInputRegex.MatchString(payload.TextEn) {
+		response := responsePayload{
+			Message: "Validation failed",
+			Error:   "Input must only contain alphanumeric characters or dashes",
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
 	commands := []struct {
 		name string
 		args []string
