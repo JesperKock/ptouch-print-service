@@ -43,24 +43,6 @@ func validCommands(inputCommand string, validCommands []string) bool {
 	return false
 }
 
-func infoHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
-		return
-	}
-
-	cmd := exec.Command("ptouch-print", "--info")
-	if err := cmd.Run(); err != nil {
-		response := responsePayload{
-			Message: "Command execution failed",
-			Error:   err.Error(),
-		}
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(response)
-		return
-	}
-}
-
 func printHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
