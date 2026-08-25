@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os/exec"
 	"regexp"
+	"strings"
 )
 
 type requestPayload struct {
@@ -31,6 +32,15 @@ func main() {
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		fmt.Printf("Server error: %s\n", err)
 	}
+}
+
+func validCommands(inputCommand string, validCommands []string) bool {
+	for _, element := range validCommands {
+		if strings.Contains(inputCommand, element) {
+			return true
+		}
+	}
+	return false
 }
 
 func infoHandler(w http.ResponseWriter, r *http.Request) {
