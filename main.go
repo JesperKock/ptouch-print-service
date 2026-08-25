@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"os/exec"
 	"regexp"
 	"slices"
@@ -114,7 +115,18 @@ func templateHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// TODO: file cleanup
+	filesToClean := []string{
+		"/images/text_da.png",
+		"/images/text_en.png",
+		"/images/da_alpha.png",
+		"/images/en_alpha.png",
+	}
+
+	for _, file := range filesToClean {
+		if err := os.Remove(file); err != nil {
+			log.Printf("failed to remove %s: %v", file, err)
+		}
+	}
 }
 
 func printHandler(w http.ResponseWriter, r *http.Request) {
