@@ -10,7 +10,7 @@ import (
 )
 
 type requestPayload struct {
-	Cmd  string `json:"cmd"`
+	Cmd  string `json:"command"`
 	Font string `json:"font"`
 	Text string `json:"text"`
 }
