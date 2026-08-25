@@ -70,8 +70,7 @@ func printHandler(w http.ResponseWriter, r *http.Request) {
 						--image <file>		print the given image
 						--text <text>		Print 1-4 lines of text.
 						--cutmark			Print a mark where the tape should be cut
-						--pad <n>			Add n pixels padding (blank tape)
-						--info				show info about detected tape`,
+						--pad <n>			Add n pixels padding (blank tape)`,
 		}
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(response)
